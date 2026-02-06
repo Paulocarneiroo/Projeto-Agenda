@@ -17,12 +17,6 @@ function Contact(body) {
     this.contact = null;
 }
 
-Contact.findById = async function(id){
-    if(typeof id !== 'string') return;
-   const user = await ContactModel.findById(id);
-   return user;
-}
-
 Contact.prototype.register = async function () {
     this.validate();
     if (this.errors.length > 0) return;
@@ -58,6 +52,25 @@ Contact.prototype.edit = async function(id){
     if(this.errors.length > 0) return;
 
     this.contact = await ContactModel.findByIdAndUpdate(id, this.body, {new: true});
+}
+
+//Métodos estáticos
+Contact.findById = async function(id){
+    if(typeof id !== 'string') return;
+    const contact = await ContactModel.findById(id);
+    return contact;
+}
+
+Contact.findAll = async function(){
+    const contacts = await ContactModel.find()
+        .sort({createdAt: -1});
+    return contacts;
+}
+
+Contact.delete = async function(id){
+    if(typeof id !== 'string') return;
+    const contact = await ContactModel.findOneAndDelete({_id: id});
+    return contact;
 }
 
 module.exports = Contact;
